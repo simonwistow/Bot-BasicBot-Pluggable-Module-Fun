@@ -6,6 +6,7 @@ lib/Bot/BasicBot/Pluggable/Module/Magic8Ball.pm
 lib/Bot/BasicBot/Pluggable/Module/Nickometer.pm
 lib/Bot/BasicBot/Pluggable/Module/Summon.pm
 lib/Bot/BasicBot/Pluggable/Module/Zippy.pm
+Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
