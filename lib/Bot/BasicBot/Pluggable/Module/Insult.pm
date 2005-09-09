@@ -4,21 +4,31 @@ use strict;
 use Bot::BasicBot::Pluggable::Module; 
 use base qw(Bot::BasicBot::Pluggable::Module);
 
-#use Net::Telnet;
-use Lingua::Translate;
 
+#use Net::Telnet;
+use  Acme::Scurvy::Whoreson::BilgeRat;
+use Lingua::Translate;
+use Text::Unidecode;
 
 our %languages = (
                   'english'    => 'en',
                   'chinese'    => 'zh',
+                  'dutch'      => 'nl',
                   'french'     => 'fr',
                   'german'     => 'de',
+                  'greek'      => 'gr',
                   'italian'    => 'it',
                   'japanese'   => 'ja',
                   'korean'     => 'ko',
                   'portuguese' => 'pt',
-                  'spanish'    => 'es'
+                  'russian'    => 'ru',
+                  'spanish'    => 'es',
 );
+
+sub init {
+    my $self = shift;
+    $self->set("user_unidecode", 0) unless defined($self->get("user_unidecode"));
+}
 
 sub said { 
     my ($self, $mess, $pri) = @_;
@@ -33,17 +43,20 @@ sub said {
     my $person   = $1;
     my $language = "english";
 
-    if ($person =~ s/ in ([a-z]+)\s*\w*\s*//i) {
+    if ($person =~ s/ in (.+)$//i) {
+    #if ($person =~ s/ in ([a-z]+)\s*\w*\s*//i) {
         $language = lc($1);
     }
-    
+
+    return "I don't speak ".join(" ", map { ucfirst($_) } split ' ', $language) unless $languages{$language};
+ 
     $person = $who if $person =~ /^\s*me\s*$/i;
 
     my $insultgenerator = Acme::Scurvy::Whoreson::BilgeRat->new( language => 'insultserver' );
 
     my $insult = "$insultgenerator";    
 
-
+    
     return "Errk, the insult code is mysteriously not working" unless defined $insult;
 
     $insult =~ s/^\s*You are/$person is/i if ($person ne $who);  
@@ -60,12 +73,14 @@ sub said {
     };
     $translated_insult = $insult if $@;
 
+    $translated_insult = unidecode($translated_insult) if $self->get("user_unidecode");
     return $translated_insult;
 
 }
 
 sub help {
-    return "Commands: 'insult <who> [in <language>]'";
+    my $languages = join(", ", map { ucfirst($_) } sort keys %languages);
+    return "Commands: 'insult <who> [in <language>]' - I speak $languages";
 }
 
 1;
