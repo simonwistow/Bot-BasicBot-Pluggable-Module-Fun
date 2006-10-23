@@ -13,7 +13,8 @@ my $build = Module::Build
                           'Games::Dice'                    => 0,
                           'Lingua::Translate'              => 0,
                           'Acme::Magic8Ball'               => '1.1',
-                          'Math::Trig'                     => 0,                          
+                          'Math::Trig'                     => 0,
+                          'Acme::Scurvy::Whoreson::BilgeRat' => 0,                          
                         },
          create_makefile_pl => 'traditional',
        );
