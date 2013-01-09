@@ -16,6 +16,8 @@ my $build = Module::Build
                           'Math::Trig'                     => 0,
                           'Acme::Scurvy::Whoreson::BilgeRat' => 0,
                           'Acme::Scurvy::Whoreson::BilgeRat::Backend::insultserver' => 0,
+                          'Convert::Morse'                 => 0,
+                          'Convert::Braille'               => 0,
                         },
          create_makefile_pl => 'traditional',
        );

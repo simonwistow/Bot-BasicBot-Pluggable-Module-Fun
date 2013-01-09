@@ -9,6 +9,9 @@ use base qw(Bot::BasicBot::Pluggable::Module);
 use  Acme::Scurvy::Whoreson::BilgeRat;
 use Lingua::Translate;
 use Text::Unidecode;
+use Convert::Morse qw(as_morse is_morsable);
+use Convert::Braille qw(brailleUnicodeToDots brailleAsciiToDots);
+
 
 our %languages = (
     'bulgarian'      => 'bg',
@@ -43,6 +46,9 @@ our %languages = (
     'tagalog'        => 'tl',
     'turkish'        => 'tr', 
     'welsh'          => 'cy',
+    
+    'morse'          => 1,
+    'braille'        => 1,    
 );
 
 
@@ -69,6 +75,8 @@ sub said {
         $language = lc($1);
     }
 
+    $language = "morse" if $language =~ m!^morse\s*code!;
+
     return "I don't speak ".join(" ", map { ucfirst($_) } split ' ', $language) unless $languages{$language};
  
     $person = $who if $person =~ /^\s*me\s*$/i;
@@ -84,6 +92,17 @@ sub said {
 
 
     return $insult if $language eq 'english';
+    
+    if ("braille" eq $language) {
+        return brailleAsciiToDots(uc($insult));
+    }
+
+    if ("morse" eq $language) {
+        my $converted = unidecode($insult);
+        return "For some bizarre reason the (possibly unidecoded) insult '$insult' is not morseable\n" unless is_morsable($converted);
+        return as_morse($converted);   
+    }
+    
     
     my %config = map { $_ => $self->get("user_${_}") }  map { my $mod = $_; $mod =~ s/^user_// ? $mod : () } $self->store_keys( res => ["^user"] );
     
