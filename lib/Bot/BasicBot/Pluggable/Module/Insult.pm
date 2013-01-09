@@ -63,8 +63,10 @@ sub said {
 
 
     return $insult if $language eq 'english';
-
-    my $xl8r = Lingua::Translate->new(src => "en", dest => $languages{$language})
+    
+    my %config = map { $_ => $self->get("user_${_}") }  map { my $mod = $_; $mod =~ s/^user_// ? $mod : () } $self->store_keys( res => ["^user"] );
+    
+    my $xl8r = Lingua::Translate->new(src => "en", dest => $languages{$language}, %config)
          or return $insult;
 
     my $translated_insult; 
